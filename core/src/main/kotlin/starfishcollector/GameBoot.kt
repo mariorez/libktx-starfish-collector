@@ -39,8 +39,13 @@ class GameBoot : KtxGame<KtxScreen>() {
         })
 
         KtxAsync.initiate()
+
+        // ASSETS MANAGEMENT
         assets.load<Texture>("turtle-1.png")
+        assets.load<Texture>("large-water.jpg")
         assets.finishLoading()
+
+        // SCREEN MANAGEMENT
         addScreen(FirstScreen(assets))
         setScreen<FirstScreen>()
     }

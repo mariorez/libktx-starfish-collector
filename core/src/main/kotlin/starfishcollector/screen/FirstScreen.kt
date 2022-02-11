@@ -31,13 +31,22 @@ class FirstScreen(
         registerAction(Input.Keys.D, Name.RIGHT)
 
         engine.add {
-            entity {
+            entity { // Background
+                with<RenderComponent> {
+                    sprite.setRegion(assets.getAsset<Texture>("large-water.jpg"))
+                }
+                with<TransformComponent> {
+                    position.x = 0f
+                    position.y = 0f
+                }
+            }
+            entity { // Turtle
                 with<RenderComponent> {
                     sprite.setRegion(assets.getAsset<Texture>("turtle-1.png"))
                 }
                 with<TransformComponent> {
-                    position.x = 170f
-                    position.y = 300f
+                    position.x = 150f
+                    position.y = 150f
                 }
             }
         }
