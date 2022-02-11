@@ -13,7 +13,7 @@ class TransformComponent : Component, Poolable, Comparable<TransformComponent> {
     }
 
     override fun compareTo(other: TransformComponent): Int {
-        return position.z.compareTo(other.position.z)
+        return other.position.z.compareTo(position.z)
     }
 
     companion object {
