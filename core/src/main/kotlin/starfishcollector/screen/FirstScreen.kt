@@ -11,7 +11,6 @@ import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.disposeSafely
 import ktx.assets.getAsset
-import ktx.log.debug
 import starfishcollector.Action
 import starfishcollector.Name
 import starfishcollector.Screen
@@ -19,6 +18,7 @@ import starfishcollector.Type
 import starfishcollector.component.InputComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
+import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
 
 class FirstScreen(
@@ -53,12 +53,13 @@ class FirstScreen(
                 with<TransformComponent> {
                     position.x = 0f
                     position.y = 0f
-                    position.z = 2f
+                    zIndex = 1f
                 }
             }
         }
 
         engine.apply {
+            addSystem(MovementSystem())
             addSystem(RenderingSystem(batch))
         }
     }
@@ -75,9 +76,6 @@ class FirstScreen(
             Name.LEFT -> InputComponent.mapper.get(player).left = state
             Name.RIGHT -> InputComponent.mapper.get(player).right = state
         }
-
-        debug { "$action" }
-        debug { "UP state: ${InputComponent.mapper.get(player).up}" }
     }
 
     override fun dispose() {

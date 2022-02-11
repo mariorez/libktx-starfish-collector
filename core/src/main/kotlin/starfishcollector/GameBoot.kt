@@ -20,7 +20,6 @@ class GameBoot : KtxGame<KtxScreen>() {
         Gdx.app.logLevel = Application.LOG_DEBUG
 
         Gdx.input.inputProcessor = InputMultiplexer(object : KtxInputAdapter {
-
             override fun keyDown(keycode: Int): Boolean {
                 val screen = currentScreen as Screen
                 screen.getActionMap()[keycode]?.let {
