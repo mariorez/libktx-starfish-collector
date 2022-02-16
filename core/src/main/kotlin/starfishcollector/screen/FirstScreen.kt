@@ -19,6 +19,7 @@ import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
+import starfishcollector.system.InputSystem
 import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
 
@@ -44,6 +45,9 @@ class FirstScreen(
             with<TransformComponent> {
                 position.x = 150f
                 position.y = 150f
+                acceleration = 400f
+                deceleration = 400f
+                maxSpeed = 100f
             }
         }
 
@@ -61,6 +65,7 @@ class FirstScreen(
         }
 
         engine.apply {
+            addSystem(InputSystem())
             addSystem(MovementSystem())
             addSystem(RenderingSystem(batch))
         }

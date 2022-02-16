@@ -2,25 +2,46 @@ package starfishcollector.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.MathUtils
 import ktx.ashley.allOf
-import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.TransformComponent
 
 class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val speed = Vector2()
-        val playerInput = InputComponent.mapper.get(entity)
 
-        if (playerInput.up) speed.y += 3f
-        if (playerInput.down) speed.y -= 3f
-        if (playerInput.left) speed.x -= 3f
-        if (playerInput.right) speed.x += 3f
+        TransformComponent.mapper.get(entity).apply {
+            // apply acceleration
+            velocity.add(
+                accelerator.x * deltaTime,
+                accelerator.y * deltaTime
+            )
 
-        val velocity = TransformComponent.mapper.get(entity).velocity
-        velocity.set(speed.x, speed.y)
-        TransformComponent.mapper.get(entity).position.add(velocity)
+            var speed = velocity.len()
+
+            // decrease speed (decelerate) when not accelerating
+            if (accelerator.len() == 0f) {
+                speed -= deceleration * deltaTime
+            }
+
+            // keep speed within set bounds
+            speed = MathUtils.clamp(speed, 0f, maxSpeed)
+
+            // update velocity
+            if (velocity.len() == 0f) {
+                velocity.set(speed, 0f)
+            } else {
+                velocity.setLength(speed)
+            }
+
+            // move by
+            if (velocity.x != 0f || velocity.y != 0f) {
+                position.add(velocity.x * deltaTime, velocity.y * deltaTime)
+            }
+
+            // reset acceleration
+            accelerator.set(0f, 0f)
+        }
     }
 }
