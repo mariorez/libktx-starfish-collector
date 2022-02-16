@@ -16,6 +16,7 @@ import starfishcollector.Name
 import starfishcollector.Screen
 import starfishcollector.Type
 import starfishcollector.component.InputComponent
+import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
 import starfishcollector.system.MovementSystem
@@ -35,6 +36,8 @@ class FirstScreen(
         registerAction(Input.Keys.D, Name.RIGHT)
 
         player = engine.entity {
+            with<PlayerComponent>()
+            with<InputComponent>()
             with<RenderComponent> {
                 sprite.setRegion(assets.getAsset<Texture>("turtle-1.png"))
             }
@@ -42,7 +45,6 @@ class FirstScreen(
                 position.x = 150f
                 position.y = 150f
             }
-            with<InputComponent>()
         }
 
         engine.add {
