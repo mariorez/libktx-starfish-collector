@@ -10,15 +10,19 @@ import starfishcollector.component.TransformComponent
 
 class InputSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
 
+    private val accelerate = Vector2()
+
     override fun processEntity(entity: Entity, deltaTime: Float) {
 
         val playerInput = InputComponent.mapper.get(entity)
 
         TransformComponent.mapper.get(entity).apply {
-            if (playerInput.right) accelerator.add(Vector2(acceleration, 0f)).setAngleDeg(0f)
-            if (playerInput.up) accelerator.add(Vector2(acceleration, 0f)).setAngleDeg(90f)
-            if (playerInput.left) accelerator.add(Vector2(acceleration, 0f)).setAngleDeg(180f)
-            if (playerInput.down) accelerator.add(Vector2(acceleration, 0f)).setAngleDeg(270f)
+            accelerate.set(acceleration, 0f).also {
+                if (playerInput.right) accelerator.add(it.setAngleDeg(0f))
+                if (playerInput.up) accelerator.add(it.setAngleDeg(90f))
+                if (playerInput.left) accelerator.add(it.setAngleDeg(180f))
+                if (playerInput.down) accelerator.add(it.setAngleDeg(270f))
+            }
         }
     }
 }
