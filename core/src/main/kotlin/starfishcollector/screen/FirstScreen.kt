@@ -3,14 +3,13 @@ package starfishcollector.screen
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
+import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
-import ktx.assets.getAsset
 import starfishcollector.Action
 import starfishcollector.Name
 import starfishcollector.Screen
@@ -24,7 +23,7 @@ import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
 
 class FirstScreen(
-    private val assets: AssetManager
+    private val assets: AssetStorage
 ) : Screen() {
     private val engine = PooledEngine()
     private val batch = SpriteBatch()
@@ -40,7 +39,7 @@ class FirstScreen(
             with<PlayerComponent>()
             with<InputComponent>()
             with<RenderComponent> {
-                sprite.setRegion(assets.getAsset<Texture>("turtle-1.png"))
+                sprite.setRegion(assets.loadSync<Texture>("turtle-1.png"))
             }
             with<TransformComponent> {
                 position.x = 150f
@@ -54,7 +53,7 @@ class FirstScreen(
         engine.add {
             entity { // Background
                 with<RenderComponent> {
-                    sprite.setRegion(assets.getAsset<Texture>("large-water.jpg"))
+                    sprite.setRegion(assets.loadSync<Texture>("large-water.jpg"))
                 }
                 with<TransformComponent> {
                     position.x = 0f
@@ -87,5 +86,6 @@ class FirstScreen(
 
     override fun dispose() {
         batch.disposeSafely()
+        assets.disposeSafely()
     }
 }
