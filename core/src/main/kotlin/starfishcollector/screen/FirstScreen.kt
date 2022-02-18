@@ -11,9 +11,7 @@ import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
 import starfishcollector.Action
-import starfishcollector.Name
 import starfishcollector.Screen
-import starfishcollector.Type
 import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
@@ -30,10 +28,10 @@ class FirstScreen(
     private val player: Entity
 
     init {
-        registerAction(Input.Keys.W, Name.UP)
-        registerAction(Input.Keys.S, Name.DOWN)
-        registerAction(Input.Keys.A, Name.LEFT)
-        registerAction(Input.Keys.D, Name.RIGHT)
+        registerAction(Input.Keys.W, Action.Name.UP)
+        registerAction(Input.Keys.S, Action.Name.DOWN)
+        registerAction(Input.Keys.A, Action.Name.LEFT)
+        registerAction(Input.Keys.D, Action.Name.RIGHT)
 
         player = engine.entity {
             with<PlayerComponent>()
@@ -70,18 +68,18 @@ class FirstScreen(
         }
     }
 
-    override fun render(delta: Float) {
-        engine.update(delta)
+    override fun doAction(action: Action) {
+        val isStarting = action.type == Action.Type.START
+        when (action.name) {
+            Action.Name.UP -> InputComponent.mapper.get(player).up = isStarting
+            Action.Name.DOWN -> InputComponent.mapper.get(player).down = isStarting
+            Action.Name.LEFT -> InputComponent.mapper.get(player).left = isStarting
+            Action.Name.RIGHT -> InputComponent.mapper.get(player).right = isStarting
+        }
     }
 
-    override fun doAction(action: Action) {
-        val state = action.type == Type.START
-        when (action.name) {
-            Name.UP -> InputComponent.mapper.get(player).up = state
-            Name.DOWN -> InputComponent.mapper.get(player).down = state
-            Name.LEFT -> InputComponent.mapper.get(player).left = state
-            Name.RIGHT -> InputComponent.mapper.get(player).right = state
-        }
+    override fun render(delta: Float) {
+        engine.update(delta)
     }
 
     override fun dispose() {

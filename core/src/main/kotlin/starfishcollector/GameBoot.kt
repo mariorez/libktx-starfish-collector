@@ -21,7 +21,7 @@ class GameBoot : KtxGame<KtxScreen>() {
             override fun keyDown(keycode: Int): Boolean {
                 (currentScreen as Screen).apply {
                     getActionMap()[keycode]?.let {
-                        doAction(Action(it, Type.START))
+                        doAction(Action(it, Action.Type.START))
                     }
                 }
                 return super.keyDown(keycode)
@@ -30,7 +30,7 @@ class GameBoot : KtxGame<KtxScreen>() {
             override fun keyUp(keycode: Int): Boolean {
                 (currentScreen as Screen).apply {
                     getActionMap()[keycode]?.let {
-                        doAction(Action(it, Type.END))
+                        doAction(Action(it, Action.Type.END))
                     }
                 }
                 return super.keyUp(keycode)
