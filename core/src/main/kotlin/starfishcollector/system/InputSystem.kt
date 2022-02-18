@@ -2,8 +2,10 @@ package starfishcollector.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.math.Vector2
 import ktx.ashley.allOf
+import starfishcollector.component.AnimationComponent
 import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.TransformComponent
@@ -22,6 +24,14 @@ class InputSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
                 if (playerInput.up) accelerator.add(it.setAngleDeg(90f))
                 if (playerInput.left) accelerator.add(it.setAngleDeg(180f))
                 if (playerInput.down) accelerator.add(it.setAngleDeg(270f))
+            }
+        }
+
+        AnimationComponent.mapper.get(entity).apply {
+            playMode = if (playerInput.up || playerInput.down || playerInput.left || playerInput.right) {
+                PlayMode.LOOP
+            } else {
+                PlayMode.NORMAL
             }
         }
     }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Pool.Poolable
 import ktx.ashley.mapperFor
 
 class TransformComponent : Component, Poolable, Comparable<TransformComponent> {
+
     val position = Vector2()
     var zIndex = 0f
     val velocity = Vector2()

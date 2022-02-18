@@ -23,14 +23,16 @@ class RenderingSystem(
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val sprite = RenderComponent.mapper.get(entity).sprite
-        val position = TransformComponent.mapper.get(entity).position
+        val transform = TransformComponent.mapper.get(entity)
 
-        sprite.run {
+        sprite.apply {
+            setOriginCenter()
+            rotation = transform.velocity.angleDeg()
             setBounds(
-                position.x,
-                position.y,
-                texture.width.toFloat(),
-                texture.height.toFloat()
+                transform.position.x,
+                transform.position.y,
+                width,
+                height
             )
             draw(batch)
         }

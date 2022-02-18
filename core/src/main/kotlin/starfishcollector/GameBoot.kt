@@ -3,6 +3,8 @@ package starfishcollector
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import ktx.app.KtxGame
 import ktx.app.KtxInputAdapter
 import ktx.app.KtxScreen
@@ -40,7 +42,10 @@ class GameBoot : KtxGame<KtxScreen>() {
         KtxAsync.initiate()
 
         // ASSETS MANAGEMENT
-        assets = AssetStorage()
+        assets = AssetStorage().apply {
+            loadSync<Texture>("large-water.jpg")
+            loadSync<TextureAtlas>("starfish-collector.atlas")
+        }
 
         // SCREEN MANAGEMENT
         addScreen(FirstScreen(assets))

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -12,10 +13,8 @@ import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
 import starfishcollector.Action
 import starfishcollector.Screen
-import starfishcollector.component.InputComponent
-import starfishcollector.component.PlayerComponent
-import starfishcollector.component.RenderComponent
-import starfishcollector.component.TransformComponent
+import starfishcollector.component.*
+import starfishcollector.system.AnimationSystem
 import starfishcollector.system.InputSystem
 import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
@@ -36,8 +35,13 @@ class FirstScreen(
         player = engine.entity {
             with<PlayerComponent>()
             with<InputComponent>()
-            with<RenderComponent> {
-                sprite.setRegion(assets.loadSync<Texture>("turtle-1.png"))
+            with<RenderComponent>()
+            with<AnimationComponent> {
+                region = assets
+                    .get<TextureAtlas>("starfish-collector.atlas")
+                    .findRegion("turtle")
+                frames = 6
+                frameDuration = 0.1f
             }
             with<TransformComponent> {
                 position.x = 150f
@@ -51,7 +55,12 @@ class FirstScreen(
         engine.add {
             entity { // Background
                 with<RenderComponent> {
-                    sprite.setRegion(assets.loadSync<Texture>("large-water.jpg"))
+                    sprite.apply {
+                        assets.get<Texture>("large-water.jpg").also {
+                            setRegion(it)
+                            setSize(it.width.toFloat(), it.height.toFloat())
+                        }
+                    }
                 }
                 with<TransformComponent> {
                     position.x = 0f
@@ -64,6 +73,7 @@ class FirstScreen(
         engine.apply {
             addSystem(InputSystem())
             addSystem(MovementSystem())
+            addSystem(AnimationSystem())
             addSystem(RenderingSystem(batch))
         }
     }
