@@ -9,6 +9,7 @@ class TransformComponent : Component, Poolable, Comparable<TransformComponent> {
 
     val position = Vector2()
     var zIndex = 0f
+    var rotation = 0f
     val velocity = Vector2()
     val accelerator = Vector2()
     var acceleration = 0f
@@ -18,6 +19,7 @@ class TransformComponent : Component, Poolable, Comparable<TransformComponent> {
     override fun reset() {
         position.set(0f, 0f)
         zIndex = 0f
+        rotation = 0f
         velocity.set(0f, 0f)
         acceleration = 0f
         deceleration = 0f

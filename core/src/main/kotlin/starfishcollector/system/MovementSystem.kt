@@ -40,6 +40,11 @@ class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
                 position.add(velocity.x * deltaTime, velocity.y * deltaTime)
             }
 
+            // set rotation when moving
+            if (velocity.len() > 0) {
+                rotation = velocity.angleDeg()
+            }
+
             // reset acceleration
             accelerator.set(0f, 0f)
         }

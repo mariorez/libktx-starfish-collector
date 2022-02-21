@@ -27,7 +27,7 @@ class RenderingSystem(
 
         sprite.apply {
             setOriginCenter()
-            rotation = transform.velocity.angleDeg()
+            rotation = transform.rotation
             setBounds(
                 transform.position.x,
                 transform.position.y,
