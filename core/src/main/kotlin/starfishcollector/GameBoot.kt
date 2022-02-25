@@ -22,8 +22,8 @@ class GameBoot : KtxGame<KtxScreen>() {
         Gdx.input.inputProcessor = InputMultiplexer(object : KtxInputAdapter {
             override fun keyDown(keycode: Int): Boolean {
                 (currentScreen as Screen).apply {
-                    getActionMap()[keycode]?.let {
-                        doAction(Action(it, Action.Type.START))
+                    getActionMap()[keycode]?.let { name ->
+                        doAction(Action(name, Action.Type.START))
                     }
                 }
                 return super.keyDown(keycode)
@@ -31,8 +31,8 @@ class GameBoot : KtxGame<KtxScreen>() {
 
             override fun keyUp(keycode: Int): Boolean {
                 (currentScreen as Screen).apply {
-                    getActionMap()[keycode]?.let {
-                        doAction(Action(it, Action.Type.END))
+                    getActionMap()[keycode]?.let { name ->
+                        doAction(Action(name, Action.Type.END))
                     }
                 }
                 return super.keyUp(keycode)

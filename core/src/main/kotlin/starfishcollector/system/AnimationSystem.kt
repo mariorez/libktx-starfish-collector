@@ -39,8 +39,8 @@ class AnimationSystem : IteratingSystem(
             )
 
             val textureArray = gdxArrayOf<TextureRegion>().apply {
-                (0 until animationData.frames).forEach {
-                    add(TextureRegion(regions[0][it]))
+                (0 until animationData.frames).forEach { col ->
+                    add(TextureRegion(regions[0][col]))
                 }
             }
 

@@ -10,6 +10,10 @@ class InputComponent : Component, Poolable {
     var left = false
     var right = false
 
+    fun isMoving(): Boolean {
+        return up || down || left || right
+    }
+
     override fun reset() {
         up = false
         down = false
