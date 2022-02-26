@@ -37,6 +37,11 @@ class FirstScreen(
 
         val worldBackground = assets.get<Texture>("large-water.jpg")
 
+        val world = WorldComponent().apply {
+            width = worldBackground.width.toFloat()
+            height = worldBackground.height.toFloat()
+        }
+
         player = engine.entity {
             with<PlayerComponent>()
             with<InputComponent>()
@@ -55,17 +60,15 @@ class FirstScreen(
                 deceleration = 400f
                 maxSpeed = 100f
             }
-        }
+        }.add(world)
 
         engine.add {
             entity {
                 with<CameraComponent> {
                     camera = orthographicCamera
                     target = player
-                    worldWidth = worldBackground.width.toFloat()
-                    worldHeight = worldBackground.height.toFloat()
                 }
-            }
+            }.add(world)
 
             entity {
                 with<RenderComponent> {

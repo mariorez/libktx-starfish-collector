@@ -2,10 +2,14 @@ package starfishcollector.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import ktx.ashley.allOf
 import starfishcollector.component.PlayerComponent
+import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
+import starfishcollector.component.WorldComponent
 
 class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
 
@@ -38,6 +42,11 @@ class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
             // move by
             if (velocity.x != 0f || velocity.y != 0f) {
                 position.add(velocity.x * deltaTime, velocity.y * deltaTime)
+                boundToWorld(
+                    position,
+                    RenderComponent.mapper.get(entity).sprite,
+                    WorldComponent.mapper.get(entity)
+                )
             }
 
             // set rotation when moving
@@ -48,5 +57,12 @@ class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
             // reset acceleration
             accelerator.set(0f, 0f)
         }
+    }
+
+    private fun boundToWorld(position: Vector2, sprite: Sprite, world: WorldComponent) {
+        if (position.x < 0f) position.x = 0f
+        if (position.x + sprite.width > world.width) position.x = world.width - sprite.width
+        if (position.y < 0f) position.y = 0f
+        if (position.y + sprite.height > world.height) position.y = world.height - sprite.height
     }
 }

@@ -9,8 +9,6 @@ class CameraComponent : Component {
 
     lateinit var camera: OrthographicCamera
     lateinit var target: Entity
-    var worldWidth = 0f
-    var worldHeight = 0f
 
     companion object {
         val mapper = mapperFor<CameraComponent>()
