@@ -10,7 +10,7 @@ import starfishcollector.GameBoot
 fun main() {
     Lwjgl3Application(GameBoot(), Lwjgl3ApplicationConfiguration().apply {
         setTitle("Starfish Collector")
-        setWindowedMode(800, 600)
+        setWindowedMode(GameBoot.SCREEN_WIDTH, GameBoot.SCREEN_HEIGHT)
         setWindowIcon(*(arrayOf(128, 64, 32, 16).map { "libgdx$it.png" }.toTypedArray()))
     })
 }

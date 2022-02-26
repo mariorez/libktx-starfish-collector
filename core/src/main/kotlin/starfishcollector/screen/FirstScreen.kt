@@ -3,6 +3,7 @@ package starfishcollector.screen
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -12,18 +13,20 @@ import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
 import starfishcollector.Action
+import starfishcollector.GameBoot
 import starfishcollector.Screen
 import starfishcollector.component.*
-import starfishcollector.system.AnimationSystem
-import starfishcollector.system.InputSystem
-import starfishcollector.system.MovementSystem
-import starfishcollector.system.RenderingSystem
+import starfishcollector.system.*
 
 class FirstScreen(
     private val assets: AssetStorage
 ) : Screen() {
     private val engine = PooledEngine()
     private val batch = SpriteBatch()
+    private val orthographicCamera = OrthographicCamera(
+        GameBoot.SCREEN_WIDTH.toFloat(),
+        GameBoot.SCREEN_HEIGHT.toFloat()
+    )
     private val player: Entity
 
     init {
@@ -31,6 +34,8 @@ class FirstScreen(
         registerAction(Input.Keys.S, Action.Name.DOWN)
         registerAction(Input.Keys.A, Action.Name.LEFT)
         registerAction(Input.Keys.D, Action.Name.RIGHT)
+
+        val worldBackground = assets.get<Texture>("large-water.jpg")
 
         player = engine.entity {
             with<PlayerComponent>()
@@ -53,13 +58,23 @@ class FirstScreen(
         }
 
         engine.add {
-            entity { // Background
+            entity {
+                with<CameraComponent> {
+                    camera = orthographicCamera
+                    target = player
+                    worldWidth = worldBackground.width.toFloat()
+                    worldHeight = worldBackground.height.toFloat()
+                }
+            }
+
+            entity {
                 with<RenderComponent> {
                     sprite.apply {
-                        assets.get<Texture>("large-water.jpg").also {
-                            setRegion(it)
-                            setSize(it.width.toFloat(), it.height.toFloat())
-                        }
+                        setRegion(worldBackground)
+                        setSize(
+                            worldBackground.width.toFloat(),
+                            worldBackground.height.toFloat()
+                        )
                     }
                 }
                 with<TransformComponent> {
@@ -74,7 +89,8 @@ class FirstScreen(
             addSystem(InputSystem())
             addSystem(MovementSystem())
             addSystem(AnimationSystem())
-            addSystem(RenderingSystem(batch))
+            addSystem(CameraSystem())
+            addSystem(RenderingSystem(batch, orthographicCamera))
         }
     }
 

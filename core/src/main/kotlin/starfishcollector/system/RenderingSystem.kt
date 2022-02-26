@@ -2,6 +2,7 @@ package starfishcollector.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import ktx.ashley.allOf
 import ktx.ashley.get
@@ -9,13 +10,15 @@ import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
 
 class RenderingSystem(
-    private val batch: Batch
+    private val batch: Batch,
+    private val camera: OrthographicCamera
 ) : SortedIteratingSystem(
     allOf(RenderComponent::class, TransformComponent::class).get(),
     compareBy { it[TransformComponent.mapper] }
 ) {
 
     override fun update(deltaTime: Float) {
+        batch.projectionMatrix = camera.combined
         batch.begin()
         super.update(deltaTime)
         batch.end()

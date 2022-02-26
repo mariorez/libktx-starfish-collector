@@ -16,6 +16,11 @@ class GameBoot : KtxGame<KtxScreen>() {
 
     private lateinit var assets: AssetStorage
 
+    companion object {
+        const val SCREEN_WIDTH = 800
+        const val SCREEN_HEIGHT = 600
+    }
+
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG
 
