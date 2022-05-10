@@ -7,11 +7,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.maps.tiled.TiledMap
 import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
+import ktx.tiled.forEachMapObject
+import ktx.tiled.type
+import ktx.tiled.x
+import ktx.tiled.y
 import starfishcollector.Action
 import starfishcollector.GameBoot
 import starfishcollector.Screen
@@ -42,6 +47,25 @@ class FirstScreen(
             height = worldBackground.height.toFloat()
         }
 
+        assets.get<TiledMap>("map.tmx").forEachMapObject("collision") { obj ->
+            val texture = assets.get<Texture>("${obj.type}.png")
+            engine.entity {
+                with<RenderComponent> {
+                    sprite.apply {
+                        setRegion(texture)
+                        setSize(
+                            texture.width.toFloat(),
+                            texture.height.toFloat()
+                        )
+                    }
+                }
+                with<TransformComponent> {
+                    position.x = obj.x
+                    position.y = obj.y
+                }
+            }
+        }
+
         player = engine.entity {
             with<PlayerComponent>()
             with<InputComponent>()
@@ -58,7 +82,7 @@ class FirstScreen(
                 position.y = 150f
                 acceleration = 400f
                 deceleration = 400f
-                maxSpeed = 100f
+                maxSpeed = 150f
             }
         }.add(world)
 

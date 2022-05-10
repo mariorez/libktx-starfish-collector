@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import ktx.app.KtxGame
 import ktx.app.KtxInputAdapter
 import ktx.app.KtxScreen
@@ -48,8 +50,13 @@ class GameBoot : KtxGame<KtxScreen>() {
 
         // ASSETS MANAGEMENT
         assets = AssetStorage().apply {
+            setLoader<TiledMap> { TmxMapLoader(fileResolver) }
             loadSync<Texture>("large-water.jpg")
+            loadSync<Texture>("starfish.png")
+            loadSync<Texture>("rock.png")
+            loadSync<Texture>("sign.png")
             loadSync<TextureAtlas>("starfish-collector.atlas")
+            loadSync<TiledMap>("map.tmx")
         }
 
         // SCREEN MANAGEMENT

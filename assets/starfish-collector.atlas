@@ -4,58 +4,16 @@ size: 2048, 128
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-rock
-  rotate: false
-  xy: 1756, 57
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-seaweed-1
-  rotate: false
-  xy: 1948, 57
-  size: 54, 64
-  orig: 54, 64
-  offset: 0, 0
-  index: -1
-seaweed-2
-  rotate: false
-  xy: 1690, 57
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-seaweed-3
-  rotate: false
-  xy: 1822, 60
-  size: 62, 61
-  orig: 62, 61
-  offset: 0, 0
-  index: -1
-seaweed-4
-  rotate: false
-  xy: 1886, 61
-  size: 60, 60
-  orig: 60, 60
-  offset: 0, 0
-  index: -1
-starfish
-  rotate: false
-  xy: 2, 2
-  size: 60, 53
-  orig: 60, 53
-  offset: 0, 0
-  index: -1
 turtle
   rotate: false
-  xy: 1028, 28
+  xy: 1028, 2
   size: 660, 93
   orig: 660, 93
   offset: 0, 0
   index: -1
 whirlpool
   rotate: false
-  xy: 2, 57
+  xy: 2, 31
   size: 1024, 64
   orig: 1024, 64
   offset: 0, 0
