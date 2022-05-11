@@ -33,6 +33,8 @@ class CameraSystem : IteratingSystem(allOf(CameraComponent::class).get()) {
             )
 
             camera.update()
+
+            mapRenderer.setView(camera)
         }
     }
 }

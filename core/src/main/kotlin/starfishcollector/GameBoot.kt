@@ -19,8 +19,8 @@ class GameBoot : KtxGame<KtxScreen>() {
     private lateinit var assets: AssetStorage
 
     companion object {
-        const val SCREEN_WIDTH = 800
-        const val SCREEN_HEIGHT = 600
+        const val WINDOW_WIDTH = 800
+        const val WINDOW_HEIGHT = 600
     }
 
     override fun create() {
@@ -51,12 +51,11 @@ class GameBoot : KtxGame<KtxScreen>() {
         // ASSETS MANAGEMENT
         assets = AssetStorage().apply {
             setLoader<TiledMap> { TmxMapLoader(fileResolver) }
-            loadSync<Texture>("large-water.jpg")
+            loadSync<TiledMap>("map.tmx")
+            loadSync<TextureAtlas>("starfish-collector.atlas")
             loadSync<Texture>("starfish.png")
             loadSync<Texture>("rock.png")
             loadSync<Texture>("sign.png")
-            loadSync<TextureAtlas>("starfish-collector.atlas")
-            loadSync<TiledMap>("map.tmx")
         }
 
         // SCREEN MANAGEMENT

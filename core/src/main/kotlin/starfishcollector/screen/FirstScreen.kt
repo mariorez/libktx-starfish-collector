@@ -8,15 +8,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
 import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
-import ktx.tiled.forEachMapObject
-import ktx.tiled.type
-import ktx.tiled.x
-import ktx.tiled.y
+import ktx.tiled.*
 import starfishcollector.Action
 import starfishcollector.GameBoot
 import starfishcollector.Screen
@@ -29,9 +27,10 @@ class FirstScreen(
     private val engine = PooledEngine()
     private val batch = SpriteBatch()
     private val orthographicCamera = OrthographicCamera(
-        GameBoot.SCREEN_WIDTH.toFloat(),
-        GameBoot.SCREEN_HEIGHT.toFloat()
+        GameBoot.WINDOW_WIDTH.toFloat(),
+        GameBoot.WINDOW_HEIGHT.toFloat()
     )
+    private val tiledMapRenderer: OrthoCachedTiledMapRenderer
     private val player: Entity
 
     init {
@@ -40,14 +39,18 @@ class FirstScreen(
         registerAction(Input.Keys.A, Action.Name.LEFT)
         registerAction(Input.Keys.D, Action.Name.RIGHT)
 
-        val worldBackground = assets.get<Texture>("large-water.jpg")
+        val tiledMap = assets.get<TiledMap>("map.tmx")
 
-        val world = WorldComponent().apply {
-            width = worldBackground.width.toFloat()
-            height = worldBackground.height.toFloat()
+        tiledMapRenderer = OrthoCachedTiledMapRenderer(tiledMap).apply {
+            setBlending(true)
         }
 
-        assets.get<TiledMap>("map.tmx").forEachMapObject("collision") { obj ->
+        val world = WorldComponent().apply {
+            width = (tiledMap.tileWidth * tiledMap.width).toFloat()
+            height = (tiledMap.tileHeight * tiledMap.height).toFloat()
+        }
+
+        tiledMap.forEachMapObject("collision") { obj ->
             val texture = assets.get<Texture>("${obj.type}.png")
             engine.entity {
                 with<RenderComponent> {
@@ -90,26 +93,10 @@ class FirstScreen(
             entity {
                 with<CameraComponent> {
                     camera = orthographicCamera
+                    mapRenderer = tiledMapRenderer
                     target = player
                 }
             }.add(world)
-
-            entity {
-                with<RenderComponent> {
-                    sprite.apply {
-                        setRegion(worldBackground)
-                        setSize(
-                            worldBackground.width.toFloat(),
-                            worldBackground.height.toFloat()
-                        )
-                    }
-                }
-                with<TransformComponent> {
-                    position.x = 0f
-                    position.y = 0f
-                    zIndex = 1f
-                }
-            }
         }
 
         engine.apply {
@@ -117,7 +104,7 @@ class FirstScreen(
             addSystem(MovementSystem())
             addSystem(AnimationSystem())
             addSystem(CameraSystem())
-            addSystem(RenderingSystem(batch, orthographicCamera))
+            addSystem(RenderingSystem(batch, orthographicCamera, tiledMapRenderer))
         }
     }
 
