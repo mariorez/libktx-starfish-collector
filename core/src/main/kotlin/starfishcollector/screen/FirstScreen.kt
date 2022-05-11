@@ -26,11 +26,11 @@ class FirstScreen(
 ) : Screen() {
     private val engine = PooledEngine()
     private val batch = SpriteBatch()
-    private val orthographicCamera = OrthographicCamera(
+    private val mainCamera = OrthographicCamera(
         GameBoot.WINDOW_WIDTH.toFloat(),
         GameBoot.WINDOW_HEIGHT.toFloat()
     )
-    private val tiledMapRenderer: OrthoCachedTiledMapRenderer
+    private val mapRenderer: OrthoCachedTiledMapRenderer
     private val player: Entity
 
     init {
@@ -41,13 +41,8 @@ class FirstScreen(
 
         val tiledMap = assets.get<TiledMap>("map.tmx")
 
-        tiledMapRenderer = OrthoCachedTiledMapRenderer(tiledMap).apply {
+        mapRenderer = OrthoCachedTiledMapRenderer(tiledMap).apply {
             setBlending(true)
-        }
-
-        val world = WorldComponent().apply {
-            width = (tiledMap.tileWidth * tiledMap.width).toFloat()
-            height = (tiledMap.tileHeight * tiledMap.height).toFloat()
         }
 
         tiledMap.forEachMapObject("collision") { obj ->
@@ -67,6 +62,11 @@ class FirstScreen(
                     position.y = obj.y
                 }
             }
+        }
+
+        val world = WorldComponent().apply {
+            width = (tiledMap.tileWidth * tiledMap.width).toFloat()
+            height = (tiledMap.tileHeight * tiledMap.height).toFloat()
         }
 
         player = engine.entity {
@@ -92,8 +92,7 @@ class FirstScreen(
         engine.add {
             entity {
                 with<CameraComponent> {
-                    camera = orthographicCamera
-                    mapRenderer = tiledMapRenderer
+                    camera = mainCamera
                     target = player
                 }
             }.add(world)
@@ -104,7 +103,7 @@ class FirstScreen(
             addSystem(MovementSystem())
             addSystem(AnimationSystem())
             addSystem(CameraSystem())
-            addSystem(RenderingSystem(batch, orthographicCamera, tiledMapRenderer))
+            addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
         }
     }
 

@@ -16,12 +16,12 @@ class CameraSystem : IteratingSystem(allOf(CameraComponent::class).get()) {
 
         CameraComponent.mapper.get(entity).apply {
 
-            val transform = TransformComponent.mapper.get(target)
+            val follow = TransformComponent.mapper.get(target)
 
-            camera.position.set(transform.position.x, transform.position.y, 0f)
+            camera.position.set(follow.position.x, follow.position.y, 0f)
 
             camera.position.x = MathUtils.clamp(
-                transform.position.x,
+                follow.position.x,
                 camera.viewportWidth / 2,
                 world.width - camera.viewportWidth / 2
             )
@@ -33,8 +33,6 @@ class CameraSystem : IteratingSystem(allOf(CameraComponent::class).get()) {
             )
 
             camera.update()
-
-            mapRenderer.setView(camera)
         }
     }
 }

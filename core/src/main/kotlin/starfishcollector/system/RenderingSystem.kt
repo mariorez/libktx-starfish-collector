@@ -20,6 +20,7 @@ class RenderingSystem(
 ) {
 
     override fun update(deltaTime: Float) {
+        mapRenderer.setView(camera)
         mapRenderer.render()
         batch.projectionMatrix = camera.combined
         batch.begin()
