@@ -19,7 +19,7 @@ class InputSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
         val playerInput = InputComponent.mapper.get(entity)
         val animation = AnimationComponent.mapper.get(entity)
 
-        if (playerInput.isMoving()) {
+        if (isMoving(playerInput)) {
             TransformComponent.mapper.get(entity).apply {
                 speedUp.set(acceleration, 0f).also { speed ->
                     if (playerInput.right) accelerator.add(speed.setAngleDeg(0f))
@@ -33,5 +33,9 @@ class InputSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
         } else {
             animation.playMode = PlayMode.NORMAL
         }
+    }
+
+    private fun isMoving(input: InputComponent): Boolean {
+        return input.up || input.down || input.left || input.right
     }
 }

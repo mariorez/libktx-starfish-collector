@@ -15,10 +15,9 @@ import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
 import ktx.tiled.*
-import starfishcollector.Action
-import starfishcollector.GameBoot
-import starfishcollector.Screen
+import starfishcollector.*
 import starfishcollector.component.*
+import starfishcollector.component.BoundingBoxComponent.BoxType.*
 import starfishcollector.system.*
 
 class FirstScreen(
@@ -61,6 +60,22 @@ class FirstScreen(
                     position.x = obj.x
                     position.y = obj.y
                 }
+                with<BoundingBoxComponent> {
+                    when (obj.type) {
+                        "rock" -> {
+                            type = ROCK
+                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
+                        }
+                        "starfish" -> {
+                            type = STARFISH
+                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
+                        }
+                        "sign" -> {
+                            type = SIGN
+                            polygon = generateBoundaryRectangle(texture.width.toFloat(), texture.height.toFloat())
+                        }
+                    }
+                }
             }
         }
 
@@ -69,25 +84,34 @@ class FirstScreen(
             height = (tiledMap.tileHeight * tiledMap.height).toFloat()
         }
 
+        val playerAnimation = AnimationComponent().apply {
+            region = assets
+                .get<TextureAtlas>("starfish-collector.atlas")
+                .findRegion("turtle")
+            frames = 6
+            frameDuration = 0.1f
+        }
+
         player = engine.entity {
             with<PlayerComponent>()
             with<InputComponent>()
             with<RenderComponent>()
-            with<AnimationComponent> {
-                region = assets
-                    .get<TextureAtlas>("starfish-collector.atlas")
-                    .findRegion("turtle")
-                frames = 6
-                frameDuration = 0.1f
-            }
             with<TransformComponent> {
-                position.x = 150f
-                position.y = 150f
+                position.x = 50f
+                position.y = 50f
                 acceleration = 400f
                 deceleration = 400f
                 maxSpeed = 150f
             }
-        }.add(world)
+            with<BoundingBoxComponent> {
+                val width = (playerAnimation.region.regionWidth / playerAnimation.frames).toFloat()
+                val height = playerAnimation.region.regionHeight.toFloat()
+                type = TURTLE
+                polygon = generateBoundaryPolygon(8, width, height)
+            }
+        }
+            .add(world)
+            .add(playerAnimation)
 
         engine.add {
             entity {
@@ -104,6 +128,7 @@ class FirstScreen(
             addSystem(AnimationSystem())
             addSystem(CameraSystem())
             addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
+            addSystem(CollisionSystem(player))
         }
     }
 
