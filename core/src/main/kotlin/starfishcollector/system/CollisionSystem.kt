@@ -9,6 +9,7 @@ import ktx.ashley.allOf
 import starfishcollector.component.BoundingBoxComponent
 import starfishcollector.component.BoundingBoxComponent.BoxType.ROCK
 import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
+import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
@@ -49,6 +50,9 @@ class CollisionSystem(
             }
         }
 
+        if (boxComponent.type == STARFISH) {
+            engine.removeEntity(entity)
+        }
     }
 
     private fun overlaps(playerBox: Polygon, otherBox: Polygon, mtv: MinimumTranslationVector): Boolean {

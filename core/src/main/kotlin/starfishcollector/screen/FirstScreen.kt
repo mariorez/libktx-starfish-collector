@@ -14,11 +14,37 @@ import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
-import ktx.tiled.*
-import starfishcollector.*
-import starfishcollector.component.*
-import starfishcollector.component.BoundingBoxComponent.BoxType.*
-import starfishcollector.system.*
+import ktx.tiled.forEachMapObject
+import ktx.tiled.height
+import ktx.tiled.tileHeight
+import ktx.tiled.tileWidth
+import ktx.tiled.type
+import ktx.tiled.width
+import ktx.tiled.x
+import ktx.tiled.y
+import starfishcollector.Action
+import starfishcollector.GameBoot
+import starfishcollector.Screen
+import starfishcollector.component.AnimationComponent
+import starfishcollector.component.BoundingBoxComponent
+import starfishcollector.component.BoundingBoxComponent.BoxType.ROCK
+import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
+import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
+import starfishcollector.component.BoundingBoxComponent.BoxType.TURTLE
+import starfishcollector.component.CameraComponent
+import starfishcollector.component.InputComponent
+import starfishcollector.component.PlayerComponent
+import starfishcollector.component.RenderComponent
+import starfishcollector.component.TransformComponent
+import starfishcollector.component.WorldComponent
+import starfishcollector.generateBoundaryPolygon
+import starfishcollector.generateBoundaryRectangle
+import starfishcollector.system.AnimationSystem
+import starfishcollector.system.CameraSystem
+import starfishcollector.system.CollisionSystem
+import starfishcollector.system.InputSystem
+import starfishcollector.system.MovementSystem
+import starfishcollector.system.RenderingSystem
 
 class FirstScreen(
     private val assets: AssetStorage
@@ -84,14 +110,6 @@ class FirstScreen(
             height = (tiledMap.tileHeight * tiledMap.height).toFloat()
         }
 
-        val playerAnimation = AnimationComponent().apply {
-            region = assets
-                .get<TextureAtlas>("starfish-collector.atlas")
-                .findRegion("turtle")
-            frames = 6
-            frameDuration = 0.1f
-        }
-
         player = engine.entity {
             with<PlayerComponent>()
             with<InputComponent>()
@@ -103,15 +121,20 @@ class FirstScreen(
                 deceleration = 400f
                 maxSpeed = 150f
             }
+            val animation = with<AnimationComponent> {
+                region = assets
+                    .get<TextureAtlas>("starfish-collector.atlas")
+                    .findRegion("turtle")
+                frames = 6
+                frameDuration = 0.1f
+            }
             with<BoundingBoxComponent> {
-                val width = (playerAnimation.region.regionWidth / playerAnimation.frames).toFloat()
-                val height = playerAnimation.region.regionHeight.toFloat()
+                val width = (animation.region.regionWidth / animation.frames).toFloat()
+                val height = animation.region.regionHeight.toFloat()
                 type = TURTLE
                 polygon = generateBoundaryPolygon(8, width, height)
             }
-        }
-            .add(world)
-            .add(playerAnimation)
+        }.add(world)
 
         engine.add {
             entity {
