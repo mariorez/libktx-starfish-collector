@@ -32,6 +32,7 @@ import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
 import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
 import starfishcollector.component.BoundingBoxComponent.BoxType.TURTLE
 import starfishcollector.component.CameraComponent
+import starfishcollector.component.EffectsRotateComponent
 import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
@@ -42,6 +43,7 @@ import starfishcollector.generateBoundaryRectangle
 import starfishcollector.system.AnimationSystem
 import starfishcollector.system.CameraSystem
 import starfishcollector.system.CollisionSystem
+import starfishcollector.system.EffectsRotateSystem
 import starfishcollector.system.InputSystem
 import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
@@ -86,6 +88,30 @@ class FirstScreen(
                     position.x = obj.x
                     position.y = obj.y
                 }
+                when (obj.type) {
+                    "rock" -> {
+                        with<BoundingBoxComponent> {
+                            type = ROCK
+                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
+                        }
+                    }
+                    "sign" -> {
+                        with<BoundingBoxComponent> {
+                            type = SIGN
+                            polygon = generateBoundaryRectangle(texture.width.toFloat(), texture.height.toFloat())
+                        }
+                    }
+                    "starfish" -> {
+                        with<BoundingBoxComponent> {
+                            type = STARFISH
+                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
+                        }
+                        with<EffectsRotateComponent> {
+                            speed = 1
+                        }
+                    }
+                }
+
                 with<BoundingBoxComponent> {
                     when (obj.type) {
                         "rock" -> {
@@ -149,6 +175,7 @@ class FirstScreen(
             addSystem(InputSystem())
             addSystem(MovementSystem())
             addSystem(AnimationSystem())
+            addSystem(EffectsRotateSystem())
             addSystem(CameraSystem())
             addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
             addSystem(CollisionSystem(player))
