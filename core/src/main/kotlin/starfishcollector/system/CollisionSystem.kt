@@ -6,10 +6,12 @@ import com.badlogic.gdx.math.Intersector
 import com.badlogic.gdx.math.Intersector.MinimumTranslationVector
 import com.badlogic.gdx.math.Polygon
 import ktx.ashley.allOf
+import ktx.ashley.remove
 import starfishcollector.component.BoundingBoxComponent
 import starfishcollector.component.BoundingBoxComponent.BoxType.ROCK
 import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
 import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
+import starfishcollector.component.FadeComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.TransformComponent
@@ -51,7 +53,10 @@ class CollisionSystem(
         }
 
         if (boxComponent.type == STARFISH) {
-            engine.removeEntity(entity)
+            entity.remove<BoundingBoxComponent>()
+            entity.add(FadeComponent().apply {
+                removeEntityOnEnd = true
+            })
         }
     }
 

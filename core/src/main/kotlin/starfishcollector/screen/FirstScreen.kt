@@ -32,10 +32,10 @@ import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
 import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
 import starfishcollector.component.BoundingBoxComponent.BoxType.TURTLE
 import starfishcollector.component.CameraComponent
-import starfishcollector.component.EffectsRotateComponent
 import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
+import starfishcollector.component.RotateComponent
 import starfishcollector.component.TransformComponent
 import starfishcollector.component.WorldComponent
 import starfishcollector.generateBoundaryPolygon
@@ -43,10 +43,11 @@ import starfishcollector.generateBoundaryRectangle
 import starfishcollector.system.AnimationSystem
 import starfishcollector.system.CameraSystem
 import starfishcollector.system.CollisionSystem
-import starfishcollector.system.EffectsRotateSystem
+import starfishcollector.system.FadeSystem
 import starfishcollector.system.InputSystem
 import starfishcollector.system.MovementSystem
 import starfishcollector.system.RenderingSystem
+import starfishcollector.system.RotateSystem
 
 class FirstScreen(
     private val assets: AssetStorage
@@ -106,8 +107,8 @@ class FirstScreen(
                             type = STARFISH
                             polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
                         }
-                        with<EffectsRotateComponent> {
-                            speed = 1
+                        with<RotateComponent> {
+                            speed = 1f
                         }
                     }
                 }
@@ -143,6 +144,7 @@ class FirstScreen(
             with<TransformComponent> {
                 position.x = 50f
                 position.y = 50f
+                zIndex = -1f
                 acceleration = 400f
                 deceleration = 400f
                 maxSpeed = 150f
@@ -175,8 +177,9 @@ class FirstScreen(
             addSystem(InputSystem())
             addSystem(MovementSystem())
             addSystem(AnimationSystem())
-            addSystem(EffectsRotateSystem())
             addSystem(CameraSystem())
+            addSystem(RotateSystem())
+            addSystem(FadeSystem())
             addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
             addSystem(CollisionSystem(player))
         }
