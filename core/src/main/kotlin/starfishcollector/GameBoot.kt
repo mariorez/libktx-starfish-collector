@@ -3,10 +3,16 @@ package starfishcollector
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.Texture.TextureFilter
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import ktx.app.KtxGame
 import ktx.app.KtxInputAdapter
 import ktx.app.KtxScreen
@@ -15,8 +21,6 @@ import ktx.async.KtxAsync
 import starfishcollector.screen.FirstScreen
 
 class GameBoot : KtxGame<KtxScreen>() {
-
-    private lateinit var assets: AssetStorage
 
     companion object {
         const val WINDOW_WIDTH = 800
@@ -49,7 +53,7 @@ class GameBoot : KtxGame<KtxScreen>() {
         KtxAsync.initiate()
 
         // ASSETS MANAGEMENT
-        assets = AssetStorage().apply {
+        val assets = AssetStorage().apply {
             setLoader<TiledMap> { TmxMapLoader(fileResolver) }
             loadSync<TiledMap>("map.tmx")
             loadSync<TextureAtlas>("starfish-collector.atlas")
@@ -58,8 +62,24 @@ class GameBoot : KtxGame<KtxScreen>() {
             loadSync<Texture>("sign.png")
         }
 
+        val labelStyle = LabelStyle().apply { font = fontGenerator() }
+
         // SCREEN MANAGEMENT
-        addScreen(FirstScreen(assets))
+        addScreen(FirstScreen(assets, labelStyle))
         setScreen<FirstScreen>()
+    }
+
+    private fun fontGenerator(): BitmapFont {
+        return FreeTypeFontGenerator(Gdx.files.internal("OpenSans.ttf"))
+            .generateFont(
+                FreeTypeFontParameter().apply {
+                    size = 38
+                    color = Color.WHITE
+                    borderColor = Color.BLACK
+                    borderWidth = 2f
+                    borderStraight = true
+                    minFilter = TextureFilter.Linear
+                    magFilter = TextureFilter.Linear
+                })
     }
 }

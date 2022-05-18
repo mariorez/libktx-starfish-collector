@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -50,7 +52,8 @@ import starfishcollector.system.RenderingSystem
 import starfishcollector.system.RotateSystem
 
 class FirstScreen(
-    private val assets: AssetStorage
+    private val assets: AssetStorage,
+    labelStyle: LabelStyle
 ) : Screen() {
     private val engine = PooledEngine()
     private val batch = SpriteBatch()
@@ -183,6 +186,13 @@ class FirstScreen(
             addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
             addSystem(CollisionSystem(player))
         }
+
+        val starFishLabel = Label("Starfish Left:", labelStyle)
+        table.apply {
+            pad(5f)
+            add(starFishLabel).top()
+            add().expandX().expandY()
+        }
     }
 
     override fun doAction(action: Action) {
@@ -197,6 +207,7 @@ class FirstScreen(
 
     override fun render(delta: Float) {
         engine.update(delta)
+        uiStage.draw()
     }
 
     override fun dispose() {
