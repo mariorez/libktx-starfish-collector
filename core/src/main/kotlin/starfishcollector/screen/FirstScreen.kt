@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import ktx.ashley.add
+import ktx.ashley.allOf
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.async.AssetStorage
@@ -38,10 +39,12 @@ import starfishcollector.component.InputComponent
 import starfishcollector.component.PlayerComponent
 import starfishcollector.component.RenderComponent
 import starfishcollector.component.RotateComponent
+import starfishcollector.component.StarfishComponent
 import starfishcollector.component.TransformComponent
 import starfishcollector.component.WorldComponent
 import starfishcollector.generateBoundaryPolygon
 import starfishcollector.generateBoundaryRectangle
+import starfishcollector.listener.StarfishCounter
 import starfishcollector.system.AnimationSystem
 import starfishcollector.system.CameraSystem
 import starfishcollector.system.CollisionSystem
@@ -63,12 +66,18 @@ class FirstScreen(
     )
     private val mapRenderer: OrthoCachedTiledMapRenderer
     private val player: Entity
+    private var starFishLabel = Label("", labelStyle)
 
     init {
         registerAction(Input.Keys.W, Action.Name.UP)
         registerAction(Input.Keys.S, Action.Name.DOWN)
         registerAction(Input.Keys.A, Action.Name.LEFT)
         registerAction(Input.Keys.D, Action.Name.RIGHT)
+
+        engine.addEntityListener(
+            allOf(StarfishComponent::class).get(),
+            StarfishCounter()
+        )
 
         val tiledMap = assets.get<TiledMap>("map.tmx")
 
@@ -106,29 +115,13 @@ class FirstScreen(
                         }
                     }
                     "starfish" -> {
+                        with<StarfishComponent>()
                         with<BoundingBoxComponent> {
                             type = STARFISH
                             polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
                         }
                         with<RotateComponent> {
                             speed = 1f
-                        }
-                    }
-                }
-
-                with<BoundingBoxComponent> {
-                    when (obj.type) {
-                        "rock" -> {
-                            type = ROCK
-                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
-                        }
-                        "starfish" -> {
-                            type = STARFISH
-                            polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
-                        }
-                        "sign" -> {
-                            type = SIGN
-                            polygon = generateBoundaryRectangle(texture.width.toFloat(), texture.height.toFloat())
                         }
                     }
                 }
@@ -187,7 +180,6 @@ class FirstScreen(
             addSystem(CollisionSystem(player))
         }
 
-        val starFishLabel = Label("Starfish Left:", labelStyle)
         table.apply {
             pad(5f)
             add(starFishLabel).top()
@@ -207,11 +199,13 @@ class FirstScreen(
 
     override fun render(delta: Float) {
         engine.update(delta)
+        starFishLabel.setText("Starfish Left: ${StarfishCounter.getStarfishCounter()}")
         uiStage.draw()
     }
 
     override fun dispose() {
         batch.disposeSafely()
         assets.disposeSafely()
+        uiStage.disposeSafely()
     }
 }
