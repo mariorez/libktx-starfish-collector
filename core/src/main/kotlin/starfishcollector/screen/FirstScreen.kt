@@ -108,12 +108,14 @@ class FirstScreen(
                             polygon = generateBoundaryPolygon(8, texture.width.toFloat(), texture.height.toFloat())
                         }
                     }
+
                     "sign" -> {
                         with<BoundingBoxComponent> {
                             type = SIGN
                             polygon = generateBoundaryRectangle(texture.width.toFloat(), texture.height.toFloat())
                         }
                     }
+
                     "starfish" -> {
                         with<StarfishComponent>()
                         with<BoundingBoxComponent> {
@@ -177,7 +179,7 @@ class FirstScreen(
             addSystem(RotateSystem())
             addSystem(FadeSystem())
             addSystem(RenderingSystem(batch, mainCamera, mapRenderer))
-            addSystem(CollisionSystem(player))
+            addSystem(CollisionSystem(player, assets))
         }
 
         table.apply {
