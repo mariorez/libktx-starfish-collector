@@ -1,10 +1,8 @@
-package starfishcollector
-
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.app.KtxScreen
 
-abstract class Screen : KtxScreen {
+abstract class BaseScreen : KtxScreen {
 
     private val actionMap = mutableMapOf<Int, Action.Name>()
     protected val uiStage = Stage()

@@ -1,11 +1,11 @@
-package starfishcollector.component
+package component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
-import starfishcollector.component.RotateComponent.Direction.CLOCKWISE
+import component.RotateEffectComponent.Direction.CLOCKWISE
 
-class RotateComponent : Component, Pool.Poolable {
+class RotateEffectComponent : Component, Pool.Poolable {
 
     enum class Direction { CLOCKWISE, COUNTERCLOCKWISE }
 
@@ -18,6 +18,6 @@ class RotateComponent : Component, Pool.Poolable {
     }
 
     companion object {
-        val mapper = mapperFor<RotateComponent>()
+        val mapper = mapperFor<RotateEffectComponent>()
     }
 }

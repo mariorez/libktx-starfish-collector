@@ -1,5 +1,3 @@
-package starfishcollector
-
 data class Action(
     val name: Name,
     val type: Type

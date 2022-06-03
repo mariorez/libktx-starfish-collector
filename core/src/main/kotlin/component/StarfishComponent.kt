@@ -1,4 +1,4 @@
-package starfishcollector.component
+package component
 
 import com.badlogic.ashley.core.Component
 import ktx.ashley.mapperFor

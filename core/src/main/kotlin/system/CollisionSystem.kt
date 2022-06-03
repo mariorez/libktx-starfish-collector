@@ -1,4 +1,4 @@
-package starfishcollector.system
+package system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
@@ -6,21 +6,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Intersector
 import com.badlogic.gdx.math.Intersector.MinimumTranslationVector
 import com.badlogic.gdx.math.Polygon
+import component.AnimationComponent
+import component.BoundingBoxComponent
+import component.FadeEffectComponent
+import component.PlayerComponent
+import component.RenderComponent
+import component.RockComponent
+import component.SignComponent
+import component.StarfishComponent
+import component.TransformComponent
 import ktx.ashley.add
 import ktx.ashley.allOf
 import ktx.ashley.entity
 import ktx.ashley.remove
 import ktx.ashley.with
 import ktx.assets.async.AssetStorage
-import starfishcollector.component.AnimationComponent
-import starfishcollector.component.BoundingBoxComponent
-import starfishcollector.component.BoundingBoxComponent.BoxType.ROCK
-import starfishcollector.component.BoundingBoxComponent.BoxType.SIGN
-import starfishcollector.component.BoundingBoxComponent.BoxType.STARFISH
-import starfishcollector.component.FadeComponent
-import starfishcollector.component.PlayerComponent
-import starfishcollector.component.RenderComponent
-import starfishcollector.component.TransformComponent
 
 class CollisionSystem(
     private val player: Entity,
@@ -40,29 +40,23 @@ class CollisionSystem(
         }
 
         val currentSprite = RenderComponent.mapper.get(entity).sprite
-        val boxComponent = BoundingBoxComponent.mapper.get(entity)
-        val currentBox = boxComponent.polygon.apply {
-            setPosition(currentSprite.x, currentSprite.y)
-            setOrigin(currentSprite.originX, currentSprite.originY)
-            rotation = currentSprite.rotation
-            setScale(currentSprite.scaleX, currentSprite.scaleY)
-        }
+        val currentBox = BoundingBoxComponent.mapper.get(entity).polygon
 
         val mtv = MinimumTranslationVector()
 
         if (!overlaps(playerBox, currentBox, mtv)) return
 
-        if (boxComponent.type == ROCK || boxComponent.type == SIGN) {
+        if (RockComponent.mapper.has(entity) || SignComponent.mapper.has(entity)) {
             TransformComponent.mapper.get(player).apply {
                 position.x += mtv.normal.x * mtv.depth
                 position.y += mtv.normal.y * mtv.depth
             }
         }
 
-        if (boxComponent.type == STARFISH) {
+        if (StarfishComponent.mapper.has(entity)) {
             entity.apply {
                 remove<BoundingBoxComponent>()
-                add(FadeComponent().apply { removeEntityOnEnd = true })
+                add(FadeEffectComponent().apply { removeEntityOnEnd = true })
             }
             engine.add {
                 entity {
@@ -78,7 +72,7 @@ class CollisionSystem(
                         frames = 10
                         frameDuration = 0.1f
                     }
-                    with<FadeComponent> {
+                    with<FadeEffectComponent> {
                         removeEntityOnEnd = true
                     }
                 }
@@ -87,12 +81,10 @@ class CollisionSystem(
     }
 
     private fun overlaps(playerBox: Polygon, otherBox: Polygon, mtv: MinimumTranslationVector): Boolean {
-
         // initial test to improve performance
         if (playerBox.boundingRectangle.overlaps(otherBox.boundingRectangle)) {
             return Intersector.overlapConvexPolygons(playerBox, otherBox, mtv)
         }
-
         return false
     }
 }

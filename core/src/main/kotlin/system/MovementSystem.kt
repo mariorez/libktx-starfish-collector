@@ -1,21 +1,21 @@
-package starfishcollector.system
+package system
 
+import WorldSize
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import ktx.ashley.allOf
-import starfishcollector.component.PlayerComponent
-import starfishcollector.component.RenderComponent
-import starfishcollector.component.TransformComponent
-import starfishcollector.component.WorldComponent
+import component.RenderComponent
+import component.TransformComponent
 
-class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
+class MovementSystem(
+    private val player: Entity,
+    private val worldSize: WorldSize
+) : EntitySystem() {
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
+    override fun update(deltaTime: Float) {
 
-        TransformComponent.mapper.get(entity).apply {
+        TransformComponent.mapper.get(player).apply {
             // apply acceleration
             velocity.add(
                 accelerator.x * deltaTime,
@@ -44,8 +44,8 @@ class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
                 position.add(velocity.x * deltaTime, velocity.y * deltaTime)
                 boundToWorld(
                     position,
-                    RenderComponent.mapper.get(entity).sprite,
-                    WorldComponent.mapper.get(entity)
+                    RenderComponent.mapper.get(player).sprite.width,
+                    RenderComponent.mapper.get(player).sprite.height
                 )
             }
 
@@ -59,10 +59,10 @@ class MovementSystem : IteratingSystem(allOf(PlayerComponent::class).get()) {
         }
     }
 
-    private fun boundToWorld(position: Vector2, sprite: Sprite, world: WorldComponent) {
+    private fun boundToWorld(position: Vector2, entityWidth: Float, entityHeight: Float) {
         if (position.x < 0f) position.x = 0f
-        if (position.x + sprite.width > world.width) position.x = world.width - sprite.width
+        if (position.x + entityWidth > worldSize.width) position.x = worldSize.width - entityWidth
         if (position.y < 0f) position.y = 0f
-        if (position.y + sprite.height > world.height) position.y = world.height - sprite.height
+        if (position.y + entityHeight > worldSize.height) position.y = worldSize.height - entityHeight
     }
 }

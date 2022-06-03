@@ -1,11 +1,11 @@
-package starfishcollector.component
+package component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
-import starfishcollector.component.FadeComponent.Mode.OUT
+import component.FadeEffectComponent.Mode.OUT
 
-class FadeComponent : Component, Pool.Poolable {
+class FadeEffectComponent : Component, Pool.Poolable {
 
     enum class Mode { IN, OUT }
 
@@ -22,6 +22,6 @@ class FadeComponent : Component, Pool.Poolable {
     }
 
     companion object {
-        val mapper = mapperFor<FadeComponent>()
+        val mapper = mapperFor<FadeEffectComponent>()
     }
 }

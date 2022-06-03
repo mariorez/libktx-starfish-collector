@@ -4,7 +4,7 @@ package starfishcollector.lwjgl3
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import starfishcollector.GameBoot
+import GameBoot
 
 /** Launches the desktop (LWJGL3) application. */
 fun main() {

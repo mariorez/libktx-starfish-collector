@@ -1,4 +1,4 @@
-package starfishcollector.system
+package system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
 import ktx.ashley.allOf
 import ktx.ashley.get
-import starfishcollector.component.RenderComponent
-import starfishcollector.component.TransformComponent
+import component.RenderComponent
+import component.TransformComponent
 
 class RenderingSystem(
     private val batch: Batch,

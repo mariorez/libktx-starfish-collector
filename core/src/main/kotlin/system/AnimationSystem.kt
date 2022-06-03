@@ -1,4 +1,4 @@
-package starfishcollector.system
+package system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import ktx.ashley.allOf
 import ktx.collections.gdxArrayOf
-import starfishcollector.component.AnimationComponent
-import starfishcollector.component.RenderComponent
+import component.AnimationComponent
+import component.RenderComponent
 
 class AnimationSystem : IteratingSystem(
     allOf(AnimationComponent::class, RenderComponent::class).get()
